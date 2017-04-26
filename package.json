@@ -9,5 +9,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/raxod502/hyperschedule"
+  },
+  "dependencies": {
+    "materialize-css": "^0.98.2"
   }
 }
