@@ -19,9 +19,11 @@ other discrepancies that plague Portal search.
 
 To the right of the search box, a list of potential filters. For
 example:
+
 * Department (dropdown menu)
 * Time (dropdown menu)
 * No conflicts with existing schedule
+
 To the right of each filter, a + button to enable it. Enabled filters
 appear on the left, below the search boxes.
 
