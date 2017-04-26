@@ -1,0 +1,13 @@
+{
+    "author": "Radon Rosborough <radon.neon@gmail.com>",
+    "bugs": {
+        "url": "https://github.com/raxod502/hyperschedule/issues"
+    },
+    "description": "Responsive scheduler for HMC classes",
+    "license": "MIT",
+    "name": "hyperschedule",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/raxod502/hyperschedule"
+    }
+}
