@@ -3,14 +3,18 @@
   "bugs": {
     "url": "https://github.com/raxod502/hyperschedule/issues"
   },
+  "dependencies": {
+    "materialize-css": "0.98.2"
+  },
   "description": "Responsive scheduler for HMC classes",
+  "engines": {
+    "node": "7.8.0"
+  },
   "license": "MIT",
   "name": "hyperschedule",
   "repository": {
     "type": "git",
     "url": "https://github.com/raxod502/hyperschedule"
   },
-  "dependencies": {
-    "materialize-css": "^0.98.2"
-  }
+  "version": "1.0.0"
 }
