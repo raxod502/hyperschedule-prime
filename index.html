@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title> Hyperschedule - Responsive scheduler for HMC </title>
+  </head>
+  <body>
+    <div id="search-and-schedule-pane">
+      <input id="search-and-schedule-toggle" type="checkbox">
+      <div id="search-pane">
+        <div id="search-construction-pane">
+          <div id="search-query-pane">
+            <input id="course-search-course-input" type="text">
+            <input id="course-search-professor-input" type="text">
+            <div id="course-search-added-filter-list">
+              <!-- Added filters are displayed here. -->
+            </div>
+          </div>
+          <div id="search-filter-pane">
+            <!-- FIXME: Add filter options here. -->
+          </div>
+        </div>
+        <div id="search-results-pane">
+          <!-- Search result table is added here once a search has
+               been issued. -->
+        </div>
+      </div>
+      <div hidden id="schedule-pane">
+        <div id="schedule-control-pane">
+          <button id="previous-schedule-button"> Previous </button>
+          <button id="next-schedule-button"> Next </button>
+          <input id="schedule-slider" type="range">
+          <input id="schedule-course-code-display-toggle" type="checkbox">
+          <input id="schedule-course-name-display-toggle" type="checkbox">
+          <input id="schedule-professor-display-toggle" type="checkbox">
+          <input id="schedule-status-display-toggle" type="checkbox">
+          <div id="schedule-message-area">
+            <!-- Messages are displayed here on schedule conflicts. -->
+          </div>
+        </div>
+        <div id="schedule-display-pane">
+          <table id="schedule-table">
+            <thead>
+              <tr>
+                <th>
+                  <!-- This is the time column. -->
+                </th>
+                <th> Monday </th>
+                <th> Tuesday </th>
+                <th> Wednesday </th>
+                <th> Thursday </th>
+                <th> Friday </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td id="schedule-table-time-column">
+                  <div> 8am </div>
+                  <div> 9am </div>
+                  <div> 10am </div>
+                  <div> 11am </div>
+                  <div> 12pm </div>
+                  <div> 1pm </div>
+                  <div> 2pm </div>
+                  <div> 3pm </div>
+                  <div> 4pm </div>
+                  <div> 5pm </div>
+                  <div> 6pm </div>
+                  <div> 7pm </div>
+                  <div> 8pm </div>
+                  <div> 9pm </div>
+                </td>
+                <!-- Classes are added in these <td> elements once some
+                     are selected in the Saved Courses pane. -->
+                <td> </td>
+                <td> </td>
+                <td> </td>
+                <td> </td>
+                <td> </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div id="saved-courses-pane">
+      <!-- FIXME: This input actually needs to be a three-way toggle. -->
+      <input id="saved-courses-sectioning-toggle" type="checkbox">
+      <div id="saved-courses-list">
+        <!-- Saved courses will show up here. -->
+      </div>
+    </div>
+  </body>
+</html>
