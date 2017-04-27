@@ -70,15 +70,18 @@ that effect in the message area.
 ## Saved Courses
 
 At the top of the Saved Courses area there is a master toggle between
-"By department" and "By time". The first sorts courses by their
-department, and the second sorts them by their time slots.
+"By department", "By time", and "Unsectioned". The first sorts courses
+by their department, and the second sorts them by their time slots.
 
 Below each header (either a department name or a time-slot schedule),
 there is a table of the courses falling into that category. It is laid
-out the same as the table in the Search pane, except that there is an
-additional column. The second-to-last column is now disable/enable for
-the schedule, rather than add/remove from Saved Courses, and the (new)
-last column has a button to remove the course from Saved Courses.
+out the same as the table in the Search pane, except that there are
+two additional columns. The third-to-last column now allows you to
+change the color for the class on the schedule, the second-to-last
+column is a disable/enable toggle for whether the class is to be
+displayed on the schedule, and the last column has a button to remove
+the course from Saved Courses. The rows can be dragged and dropped to
+reorder them.
 
 Clicking on a row of one of the tables (which automatically collapses
 any other row previously expanded) reveals a detail view similar to
