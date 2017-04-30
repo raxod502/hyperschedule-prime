@@ -1,12 +1,14 @@
 **Hyperschedule**: responsive scheduler for HMC classes.
 
-## Dependencies
-
-    $ brew install node
-
 ## Development
 
     $ git clone https://github.com/raxod502/hyperschedule.git
     $ cd hyperschedule
-    $ npm install
     $ open index.html
+
+## Coding style
+
+Lots of comments. All variables and functions should have
+[docstrings].
+
+[docstrings]: http://usejsdoc.org/

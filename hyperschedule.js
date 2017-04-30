@@ -1,3 +1,11 @@
+////////////////////////////////////////////////////////////////////////////////
+//// Logging
+
+let log = console.log;
+
+////////////////////////////////////////////////////////////////////////////////
+//// Course data
+
 /**
  * Data about valid courses, as a map.
  *
@@ -32,7 +40,7 @@
  *     firstName [string]
  *     lastName [string]
  *   schools
- *     name [string, e.g. "Harvey Mudd"]]
+ *     name [string, e.g. "Harvey Mudd"]
  *
  * The school names are assigned manually; all other fields are drawn
  * from the Portal Lingk API.
@@ -47,6 +55,9 @@ let courseData = null;
  * This variable is null before the course data has been loaded.
  */
 let rawJSON = null;
+
+////////////////////////////////////////////////////////////////////////////////
+//// JSON parsing utility functions
 
 /**
  * Make sure obj is a string, and otherwise return null.
@@ -171,13 +182,16 @@ function parseDays(obj) {
   return null;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//// JSON parsing
+
 /**
  * Given the JSON returned by the Portal Lingk API, process it into
  * nicely formatted course data. See the documentation for the
  * courseData variable.
  */
 function parseCourseDataJSON(json) {
-  console.log("Parsing course data JSON...");
+  log("Parsing course data JSON...");
   let courses = {},
       sections = {},
       calendarRanges = {},
@@ -275,7 +289,7 @@ function parseCourseDataJSON(json) {
       }
     }
   }
-  console.log("Finished parsing course data JSON.");
+  log("Finished parsing course data JSON.");
   return {"courses": courses,
           "sections": sections,
           "calendarRanges": calendarRanges,
@@ -283,6 +297,9 @@ function parseCourseDataJSON(json) {
           "instructors": instructors,
           "schools": schools};
 }
+
+////////////////////////////////////////////////////////////////////////////////
+//// JSONP callback
 
 // This function is a hack, since the API at csearch.yancey.io returns
 // JSONP rather than JSON. It should be removed once we have our own
