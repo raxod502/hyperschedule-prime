@@ -11,4 +11,11 @@
 Lots of comments. All variables and functions should have
 [docstrings].
 
+## More information
+
+See:
+
+* [UI information](doc/ui.md)
+* [Future plans](doc/roadmap.md)
+
 [docstrings]: http://usejsdoc.org/
