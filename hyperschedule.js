@@ -61,6 +61,12 @@ let courseData = null;
 ////////////////////////////////////////////////////////////////////////////////
 //// Fetch data
 
+/**
+ * Download the course data from courses.json and save it in the
+ * courseData variable.
+ *
+ * If an error occurs, log it and do nothing to courseData.
+ */
 async function fetchCourseData() {
   log.info("Fetching course data...");
   let response = await fetch("courses.json");
