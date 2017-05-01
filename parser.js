@@ -1,22 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 //// Dependencies
 
-let fs = require("fs"),
-    fetch = require("node-fetch");
-
-////////////////////////////////////////////////////////////////////////////////
-//// Logging
-
-/**
- * Map of functions that can be used for logging.
- *
- * Use log.info, log.err, and log.debug instead of console.log.
- */
-let log = {
-  "debug": console.log,
-  "err": console.log,
-  "info": console.log
-};
+const fetch = require("node-fetch"),
+      fs = require("mz/fs"),
+      log = require("./log");
 
 ////////////////////////////////////////////////////////////////////////////////
 //// Making API call
@@ -25,10 +12,10 @@ let log = {
  * URL that returns JSONP containing course data from the Portal Lingk
  * API.
  */
-let apiURL = "https://csearch.yancey.io/courses.json";
+const apiURL = "https://csearch.yancey.io/courses.json";
 
 /**
- * Return the JSON from the Portal Lingk API.
+ * Return the JSON from the Portal Lingk API asynchronously.
  *
  * The JSONP is unwrapped.
  */
@@ -187,7 +174,7 @@ function parseDays(obj) {
 /**
  * Given the JSON returned by the Portal Lingk API, process it into
  * nicely formatted course data. See the documentation for the
- * courseData variable.
+ * courseData variable in hyperschedule.js.
  */
 function parseJSON(json) {
   let courses = {},
@@ -300,38 +287,25 @@ function parseJSON(json) {
 
 /**
  * Given the course data map, stringify it and write it to
- * courses.json.
+ * courses.json asynchronously.
  */
 async function writeCourseData(courseData) {
-  return new Promise((resolve, reject) => {
-    fs.writeFile("courses.json", JSON.stringify(courseData), error => {
-      if (error === null) {
-        resolve(null);
-      }
-      else {
-        reject(error);
-      }
-    });
-  });
+  await fs.writeFile("courses.json", JSON.stringify(courseData));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//// Main script
+//// Exports
 
 /**
  * Download JSONP from the Portal Lingk API, parse it, and write it to
- * courses.json.
+ * courses.json, asynchronously.
  *
- * If an error occurs, log a message and exit non-zero.
+ * If an error occurs, log a message.
  */
-function main() {
-  getJSON()
+async function runParser() {
+  return await getJSON()
     .then(parseJSON)
-    .then(writeCourseData)
-    .catch(error => {
-      log.err(error.message);
-      process.exit(1);
-    });
+    .then(writeCourseData);
 }
 
-main();
+module.exports = runParser;
