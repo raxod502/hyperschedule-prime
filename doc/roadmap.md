@@ -4,8 +4,8 @@
 
 * **DONE** - Download JSONP from csearch.yancey.io and parse it into a
   sane format.
-* Fetch and parse the JSONP on the backend and save it to a static
-  file. Then load the file asynchronously on the client side.
+* **DONE** - Fetch and parse the JSONP on the backend and save it to a
+  static file. Then load the file asynchronously on the client side.
 * Hook up the JSON parser to the Portal Lingk API, once I get access
   to it, instead of csearch.yancey.io.
 

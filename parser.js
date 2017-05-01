@@ -1,60 +1,59 @@
 ////////////////////////////////////////////////////////////////////////////////
-//// Logging
+//// Dependencies
 
-let log = console.log;
+let fs = require("fs"),
+    fetch = require("node-fetch");
 
 ////////////////////////////////////////////////////////////////////////////////
-//// Course data
+//// Logging
 
 /**
- * Data about valid courses, as a map.
+ * Map of functions that can be used for logging.
  *
- * This is a map of maps. The keys in the top-level maps are strings
- * like "courses", "sections", etc. Each value is another map keyed by
- * GUID. Each value in the GUID maps is an entity represented as
- * another map. References between entities is done by GUID. This is
- * the overall layout:
- *
- * courseData
- *   courses
- *     code [string, e.g. "FGSS192  SC"]
- *     name [string, e.g. "Antiracist Feminist Queer Praxis"]
- *     description [string, e.g. "This course will explore intersectional ..."]
- *     school [GUID]
- *     sections [array of GUIDS]
- *   sections
- *     instructors [array of GUIDs]
- *     calendarRange [GUID]
- *     sessions [array of GUIDs]
- *     enrollment [map]
- *       current [integer, e.g. 16]
- *       max [integer, e.g. 20]
- *   calendarRanges
- *     start [date, e.g. 2016-08-30, as Date]
- *     end [date, e.g. 2016-12-16, as Date]
- *   sessions
- *     start [time, e.g. 7pm, as {"hour": 7, "minute": 0}]
- *     end [time, e.g. 9:45pm, as {"hour": 9, "minute": 45}]
- *     days [array of integers, e.g. [1, 3, 5]; Monday = 1, etc.]
- *   instructors
- *     firstName [string]
- *     lastName [string]
- *   schools
- *     name [string, e.g. "Harvey Mudd"]
- *
- * The school names are assigned manually; all other fields are drawn
- * from the Portal Lingk API.
- *
- * This variable is null before the course data has been loaded.
+ * Use log.info, log.err, and log.debug instead of console.log.
  */
-let courseData = null;
+let log = {
+  "debug": console.log,
+  "err": console.log,
+  "info": console.log
+};
+
+////////////////////////////////////////////////////////////////////////////////
+//// Making API call
 
 /**
- * The raw JSON returned by the Portal Lingk API.
- *
- * This variable is null before the course data has been loaded.
+ * URL that returns JSONP containing course data from the Portal Lingk
+ * API.
  */
-let rawJSON = null;
+let apiURL = "https://csearch.yancey.io/courses.json";
+
+/**
+ * Return the JSON from the Portal Lingk API.
+ *
+ * The JSONP is unwrapped.
+ */
+async function getJSON() {
+  let response = await fetch(apiURL);
+  if (!response.ok) {
+    throw new Error("API call failed: %d %s",
+                    response.status, response.statusText);
+  }
+  let text = await response.text();
+  if (text.slice(0, 14) == "lingkCallback(" &&
+      text.slice(-2) == ")\n") {
+    return JSON.parse(text.slice(14, -2));
+  }
+  else {
+    let responseSummary;
+    if (text.length > 16) {
+      responseSummary = '"' + text.slice(0, 14) + "..." + text.slice(-2) + '"';
+    }
+    else {
+      responseSummary = '"' + text + '"';
+    }
+    throw new Error("Malformed JSONP response: " + responseSummary);
+  }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //// JSON parsing utility functions
@@ -190,8 +189,7 @@ function parseDays(obj) {
  * nicely formatted course data. See the documentation for the
  * courseData variable.
  */
-function parseCourseDataJSON(json) {
-  log("Parsing course data JSON...");
+function parseJSON(json) {
   let courses = {},
       sections = {},
       calendarRanges = {},
@@ -289,7 +287,6 @@ function parseCourseDataJSON(json) {
       }
     }
   }
-  log("Finished parsing course data JSON.");
   return {"courses": courses,
           "sections": sections,
           "calendarRanges": calendarRanges,
@@ -299,17 +296,42 @@ function parseCourseDataJSON(json) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//// JSONP callback
+//// Saving to disk
 
-// This function is a hack, since the API at csearch.yancey.io returns
-// JSONP rather than JSON. It should be removed once we have our own
-// API.
 /**
- * This function is called from the JSONP fetched from apiURL. It sets
- * the value of the courseData variable to the parsed JSON, and the
-   value of the rawJSON variable to the unparsed JSON.
+ * Given the course data map, stringify it and write it to
+ * courses.json.
  */
-function lingkCallback(json) {
-  rawJSON = json;
-  courseData = parseCourseDataJSON(json);
+async function writeCourseData(courseData) {
+  return new Promise((resolve, reject) => {
+    fs.writeFile("courses.json", JSON.stringify(courseData), error => {
+      if (error === null) {
+        resolve(null);
+      }
+      else {
+        reject(error);
+      }
+    });
+  });
 }
+
+////////////////////////////////////////////////////////////////////////////////
+//// Main script
+
+/**
+ * Download JSONP from the Portal Lingk API, parse it, and write it to
+ * courses.json.
+ *
+ * If an error occurs, log a message and exit non-zero.
+ */
+function main() {
+  getJSON()
+    .then(parseJSON)
+    .then(writeCourseData)
+    .catch(error => {
+      log.err(error.message);
+      process.exit(1);
+    });
+}
+
+main();
