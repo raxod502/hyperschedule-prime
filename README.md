@@ -2,14 +2,18 @@
 
 ## Dependencies
 
+* [Git](https://git-scm.com/)
 * [node.js](https://nodejs.org/en/)
+* Web server, e.g. you can use [Python](https://www.python.org/)
 
 ## Development
 
     $ git clone https://github.com/raxod502/hyperschedule.git
     $ cd hyperschedule
     $ npm install
-    $ open index.html
+    $ python -m SimpleHTTPServer
+
+Then navigate to `0.0.0.0:8000` in your web browser.
 
 ## Coding style
 
