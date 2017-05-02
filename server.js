@@ -8,6 +8,9 @@ let express = require("express"),
 ////////////////////////////////////////////////////////////////////////////////
 //// Command-line arguments
 
+/**
+ * If true, suppress automatic courses.json generation.
+ */
 let isManual = false;
 for (let arg of process.argv.slice(2)) {
   if (arg == "--manual") {
@@ -49,12 +52,27 @@ app.get("/courses.json", (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////
 //// Main script
 
+/**
+ * Start the server asynchronously. It runs on port 5000 by default,
+ * but this can be overridden by means of the PORT environment
+ * variable.
+ */
 function startServer() {
   return new Promise((resolve, reject) => {
     app.listen(app.get("port"), () => resolve(app.get("port")));
   });
 }
 
+/**
+ * Run the parser, then start the server, then run the parser
+ * repeatedly in the background.
+ *
+ * The parser is run repeatedly every second until it succeeds, before
+ * the server is started. After the server is started, the parser is
+ * run every 10 seconds.
+ *
+ * If isManual is true, only start the server.
+ */
 async function runParserRepeatedly(doStartServer) {
   if (!isManual) {
     try {
