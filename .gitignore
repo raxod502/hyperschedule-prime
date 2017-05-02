@@ -1,3 +1,11 @@
+# local Heroku environment variables
+/.env
+
+# parsed courseData JSON
 /courses.json
+
+# npm dependencies
 /node_modules/
+
+# place to put things
 /junk/
