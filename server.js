@@ -82,7 +82,7 @@ async function runParserRepeatedly(doStartServer) {
     catch (err) {
       log.err("Error while generating courses.json. " +
               "Trying again in 1 second.");
-      setTimeout(runParserRepeatedly, 1000, true);
+      setTimeout(runParserRepeatedly, 1000, doStartServer);
     }
     log.info("Generated courses.json.");
   }
