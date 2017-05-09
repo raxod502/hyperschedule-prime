@@ -3,7 +3,8 @@
 
 const fetch = require("node-fetch"),
       fs = require("mz/fs"),
-      log = require("./log");
+      log = require("./log"),
+      path = require("path");
 
 ////////////////////////////////////////////////////////////////////////////////
 //// Making API call
@@ -19,7 +20,7 @@ const apiURL = "https://csearch.yancey.io/courses.json";
  *
  * The JSONP is unwrapped.
  */
-async function getJSON() {
+async function getLingkJSON() {
   let response = await fetch(apiURL);
   if (!response.ok) {
     throw new Error("API call failed: %d %s",
@@ -176,7 +177,7 @@ function parseDays(obj) {
  * nicely formatted course data. See the documentation for the
  * courseData variable in hyperschedule.js.
  */
-function parseJSON(json) {
+function parseLingkJSON(json) {
   let courses = {},
       sections = {},
       calendarRanges = {},
@@ -290,7 +291,8 @@ function parseJSON(json) {
  * courses.json asynchronously.
  */
 async function writeCourseData(courseData) {
-  await fs.writeFile("courses.json", JSON.stringify(courseData));
+  let courseDataFile = path.join(__dirname, "../../public/courses.json");
+  await fs.writeFile(courseDataFile, JSON.stringify(courseData));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -302,10 +304,15 @@ async function writeCourseData(courseData) {
  *
  * If an error occurs, log a message.
  */
-async function runParser() {
-  return await getJSON()
-    .then(parseJSON)
+async function updateCourseData() {
+  return await getLingkJSON()
+    .then(parseLingkJSON)
     .then(writeCourseData);
 }
 
-module.exports = runParser;
+module.exports = {
+  "getLingkJSON": getLingkJSON,
+  "parseLingkJSON": parseLingkJSON,
+  "writeCourseData": writeCourseData,
+  "updateCourseData": updateCourseData
+};

@@ -16,17 +16,18 @@ Clone the repo:
 
 Install the dependencies:
 
+    $ cd backend
     $ npm install
 
 Start the server:
 
-    $ node server.js
+    $ npm run server
 
 This will download, parse, and cache the Portal courses automatically
 every 10 seconds. To handle this manually, do instead:
 
-    $ node parser.js
-    $ node server.js --manual
+    $ npm run parser
+    $ npm run server -- --manual
 
 In either case, navigate to `localhost:5000` in your web browser.
 
@@ -39,7 +40,16 @@ Test the app locally:
 It will be deployed to `localhost:5000`.
 
 When you push to master, the app is deployed automatically
-to [Hyperschedule][hyperschedule].
+to [Hyperschedule][hyperschedule]. Alternatively, you can deploy
+manually by adding the Heroku Git remote and then pushing to it:
+
+    $ heroku login
+    $ heroku git:remote -a hyperschedule
+    $ git push heroku master
+
+To roll back an accidental deploy, use:
+
+    $ heroku rollback
 
 ## Coding style
 

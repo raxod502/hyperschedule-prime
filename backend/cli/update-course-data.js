@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-let log = require("./log"),
-    runParser = require("./parser");
+let log = require("../lib/log"),
+    updateCourseData = require("../lib/api").updateCourseData;
 
-runParser()
+updateCourseData()
   .then(result => process.exit(0))
   .catch(err => {
     log.err(err);

@@ -21,7 +21,8 @@
     "url": "https://github.com/raxod502/hyperschedule"
   },
   "scripts": {
-    "parser": "node -e 'require(\"./parser\")()'"
+    "server": "node backend/cli/run-server.js",
+    "parser": "node backend/cli/update-course-data.js"
   },
   "version": "1.0.0"
 }
