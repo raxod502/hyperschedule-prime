@@ -88,8 +88,8 @@ async function autoUpdateCourseData(doStartServer) {
     log.info(`Server running on port ${port}.`);
   }
   if (!isManual) {
-    log.info("Regenerating courses.json in 10 seconds.");
-    setTimeout(autoUpdateCourseData, 10000, false);
+    log.info("Regenerating courses.json in 60 seconds.");
+    setTimeout(autoUpdateCourseData, 60000, false);
   }
 }
 
