@@ -1,4 +1,5 @@
-**Hyperschedule**: responsive scheduler for HMC classes.
+**Hyperschedule**: responsive scheduler for HMC classes. Check out the
+webapp [here][hyperschedule]!
 
 ## Dependencies
 
@@ -38,7 +39,7 @@ Test the app locally:
 It will be deployed to `localhost:5000`.
 
 When you push to master, the app is deployed automatically
-to [Hyperschedule](https://hyperschedule.herokuapp.com/).
+to [Hyperschedule][hyperschedule].
 
 ## Coding style
 
@@ -53,3 +54,4 @@ See:
 * [Future plans](doc/roadmap.md)
 
 [jsdoc]: http://usejsdoc.org/
+[hyperschedule]: https://hyperschedule.herokuapp.com/
