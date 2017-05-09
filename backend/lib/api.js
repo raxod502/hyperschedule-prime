@@ -62,11 +62,12 @@ function parseString(obj) {
  * Make sure obj is an array, optionally parsing each element.
  *
  * Non-arrays are converted to empty arrays. If parser is provided, it
- * is used to transform each element, and falsy values are discarded.
+ * is used to transform each element, and falsy values are discarded
+ * both before and after the application of the parser.
  */
 function parseArray(obj, parser) {
   if (Array.isArray(obj)) {
-    return obj.map(parser || (x => x)).filter(x => x);
+    return obj.filter(x => x).map(parser || (x => x)).filter(x => x);
   }
   return [];
 }
@@ -169,8 +170,162 @@ function parseDays(obj) {
   return null;
 }
 
+function parseCalendarSession(calendarSession) {
+  if (calendarSession == null) return null;
+  let startDate = parseDate(calendarSession.beginDate),
+      endDate = parseDate(calendarSession.endDate);
+  if (!startDate || !endDate) return null;
+  let year = startDate.getYear();
+  let term =
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //// JSON parsing
+
+function parseLingkJSON(json) {
+  let courses = [];
+  for (let rawCourse of json.data) {
+    let course = {
+      code: parseString(rawCourse.courseNumber),
+      description: parseString(course.description),
+      name: parseString(course.courseTitle),
+      sections: []
+    };
+    if (!course.code || !course.description || !course.name) {
+      continue;
+    }
+    for (let rawSection of course.courseSections || []) {
+      let section = {
+        enrollment: {
+          current: parseInteger(rawSection.currentEnrollment),
+          max: parseInteger(rawSection.capacity)
+        },
+        instructors: parseArray(
+          rawSection.sectionInstructor,
+          x => {
+            if (x.firstName && x.lastNAme) {
+              return {
+                firstName: x.firstName,
+                lastName: x.lastName
+              };
+            }
+            else {
+              return null;
+            }
+          })
+      };
+      if (!section.enrollment.current || !section.enrollment.max) {
+        continue;
+      }
+      let calendarSession = parseSingleElementArray(
+        rawSection.calendarSessions
+      );
+      // TODO: record calendar range
+      // TODO: record sessions
+    }
+    if (!course.sections.length) {
+      continue;
+    }
+  }
+  // TODO: record schools
+  return courses;
+
+  ////////////////////////////////////////
+  let courses = {},
+      sections = {},
+      calendarSessions = {},
+      sessions = {},
+      instructors = {},
+      schools = {};
+  let parsedCourse = {
+    "code": parseString(course.courseNumber),
+    "description": parseString(course.description),
+    "name": parseString(course.courseTitle),
+    "school": parseString(course.institutionGuid),
+    "sections": parseArray(
+      course.courseSections,
+      x => parseString(x.courseSectionGuid)
+    )
+  };
+  if (!parsedCourse.code || !parsedCourse.description ||
+      !parsedCourse.name || !parsedCourse.school ||
+      !parsedCourse.sections.length) {
+    return null;
+  }
+  let courses = {course.courseGuid: parsedCourse};
+    for (let section of course.courseSections || []) {
+      sections[section.courseGuid] = {
+        // As far as I can tell (2017-04-29), it's only ever possible
+        // for a section to have one calendarSession. So we won't
+        // bother with keeping track of other ones. If we don't have
+        // any, it'll be null.
+        "calendarRange": parseSingleElementArray(
+          section.calendarSessions,
+          x => parseString(x.calendarSessionGuid)
+        ),
+        "enrollment": {
+          "current": parseInteger(section.currentEnrollment),
+          "max": parseInteger(section.capacity)
+        },
+        "instructors": parseArray(
+          section.sectionInstructor,
+          x => parseString(x.staffGuid)
+        ),
+        "sessions": parseArray(
+          section.courseSectionSchedule,
+          x => x.CourseSectionScheduleGuid
+        )
+      };
+      // There's only one calendarSession per section (see above), but
+      // might as well iterate through all of them. It's cleaner, and
+      // just in case the API changes later, we'll have less to
+      // change.
+      for (let calendarSession of section.calendarSessions || []) {
+        calendarRanges[calendarSession.calendarSessionGuid] = {
+          "start": parseDate(calendarSession.beginDate),
+          "end": parseDate(calendarSession.endDate)
+        };
+      }
+      for (let session of section.courseSectionSchedule || []) {
+        sessions[session.CourseSectionScheduleGuid] = {
+          "start": parseTime(session.ClassBeginningTime),
+          "end": parseTime(session.ClassEndingTime),
+          "days": parseDays(session.ClassMeetingDays)
+        };
+      }
+      for (let instructor of section.sectionInstructor || []) {
+        instructors[instructor.staffGuid] = {
+          "firstName": parseString(instructor.firstName),
+          "lastName": parseString(instructor.lastName)
+        };
+      }
+    }
+    if (courseCode) {
+      let courseCodeSuffix = course.courseNumber.slice(-3);
+      if (courseCodeSuffix[0] == " ") {
+        let schoolID = courseCodeSuffix.slice(1);
+        if (schoolID == "HM") {
+          schools[course.institutionGuid] = "Harvey Mudd";
+        }
+        else if (schoolID == "PZ") {
+          schools[course.institutionGuid] = "Pitzer";
+        }
+        else if (schoolID == "PO") {
+          schools[course.institutionGuid] = "Pomona";
+        }
+        else if (schoolID == "CM") {
+          schools[course.institutionGuid] = "CMC";
+        }
+        else if (schoolID == "SC") {
+          schools[course.institutionGuid] = "Scripps";
+        }
+        // If none of the IDs match, that's OK, we can just skip this
+        // course. We only need one course to match to identify the
+        // institution. In theory, we could end up with an unmatched
+        // GUID this way, but as of 2017-04-30, that doesn't happen.
+      }
+    }
+}
 
 /**
  * Given the JSON returned by the Portal Lingk API, process it into
