@@ -7,6 +7,24 @@ webapp [here][hyperschedule]!
 * [node.js](https://nodejs.org/en/) (to run the backend)
 * [Heroku](https://heroku.com/) (to test the deployment pipeline)
 
+### Installation on macOS
+
+Install the command-line tools:
+
+    $ xcode-select --install
+
+Install Homebrew:
+
+    $ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+Install node.js:
+
+    $ brew install node
+
+Install Heroku:
+
+    $ brew install heroku
+
 ## Development
 
 Clone the repo:
